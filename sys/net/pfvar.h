@@ -1258,6 +1258,17 @@ struct pfioc_state_kill {
 	u_int			psk_killed;
 };
 
+struct pfioc_state_change {
+	struct pf_state_cmp	psk_pfcmp;
+	sa_family_t		psk_af;
+	int			psk_proto;
+	struct pf_rule_addr	psk_src;
+	struct pf_rule_addr	psk_dst;
+	char			psk_ifname[IFNAMSIZ];
+	char			psk_label[PF_RULE_LABEL_SIZE];
+	u_int			psk_changed;
+};
+
 struct pfioc_states {
 	int	ps_len;
 	union {
@@ -1393,6 +1404,7 @@ struct pfioc_iface {
 #define DIOCGETLIMIT	_IOWR('D', 39, struct pfioc_limit)
 #define DIOCSETLIMIT	_IOWR('D', 40, struct pfioc_limit)
 #define DIOCKILLSTATES	_IOWR('D', 41, struct pfioc_state_kill)
+#define DIOCCHANGESTATES	_IOWR('D', 300, struct pfioc_state_change)
 #define DIOCSTARTALTQ	_IO  ('D', 42)
 #define DIOCSTOPALTQ	_IO  ('D', 43)
 #define DIOCADDALTQ	_IOWR('D', 45, struct pfioc_altq)
