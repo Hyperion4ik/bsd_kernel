@@ -2125,6 +2125,10 @@ main(int argc, char *argv[])
 			opts |= PF_OPT_CLRRULECTRS;
 			mode = O_RDWR;
 			break;
+		/* SKYNICK XXX */
+		case 'c':
+			printf("Hello, world!")
+			break;
 		case 'h':
 			/* FALLTHROUGH */
 		default:

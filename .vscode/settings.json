@@ -1,5 +1,22 @@
 {
 	"files.associations": {
-		"*.inc": "cpp"
+		"*.inc": "cpp",
+		"param.h": "c",
+		"bus.h": "c",
+		"conf.h": "c",
+		"filio.h": "c",
+		"endian.h": "c",
+		"fcntl.h": "c",
+		"interrupt.h": "c",
+		"jail.h": "c",
+		"kernel.h": "c",
+		"kthread.h": "c",
+		"lock.h": "c",
+		"module.h": "c",
+		"mbuf.h": "c",
+		"proc.h": "c",
+		"rwlock.h": "c",
+		"smp.h": "c",
+		"if.h": "c"
 	}
 }
