@@ -2130,7 +2130,7 @@ main(int argc, char *argv[])
 			break;
 		/* SKYNICK XXX */
 		case 'c':
-			printf("Hello, world!")
+			printf("Hello, world!");
 			break;
 		case 'h':
 			/* FALLTHROUGH */
