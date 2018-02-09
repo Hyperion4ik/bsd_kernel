@@ -1989,6 +1989,7 @@ pfctl_lookup_option(char *cmd, const char **list)
 int
 main(int argc, char *argv[])
 {
+
 	int	 error = 0;
 	int	 ch;
 	int	 mode = O_RDONLY;
@@ -2025,7 +2026,7 @@ main(int argc, char *argv[])
 		case 'F':
 			clearopt = pfctl_lookup_option(optarg, clearopt_list);
 			if (clearopt == NULL) {
-				warnx("Unknown flush modifier '%s'", optarg);
+				warnx("11Unknown flush modifier '%s'", optarg);
 				usage();
 			}
 			mode = O_RDWR;
