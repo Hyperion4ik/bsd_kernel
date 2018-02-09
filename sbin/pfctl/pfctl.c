@@ -232,10 +232,12 @@ usage(void)
 {
 	extern char *__progname;
 
+/* SKYNICK XXX */
 	fprintf(stderr,
 "usage: %s [-AdeghmNnOPqRrvz] [-a anchor] [-D macro=value] [-F modifier]\n"
 	"\t[-f file] [-i interface] [-K host | network]\n"
 	"\t[-k host | network | label | id] [-o level] [-p device]\n"
+	"\t[-c host | network | label | id] \n"
 	"\t[-s modifier] [-t table -T command [address ...]] [-x level]\n",
 	    __progname);
 
@@ -1997,9 +1999,9 @@ main(int argc, char *argv[])
 
 	if (argc < 2)
 		usage();
-
+/* SKYNICK XXX */
 	while ((ch = getopt(argc, argv,
-	    "a:AdD:eqf:F:ghi:k:K:mnNOo:Pp:rRs:t:T:vx:z")) != -1) {
+	    "a:AdD:eqf:F:ghi:k:K:c:mnNOo:Pp:rRs:t:T:vx:z")) != -1) {
 		switch (ch) {
 		case 'a':
 			anchoropt = optarg;
