@@ -1719,13 +1719,13 @@ relock_DIOCKILLSTATES:
 
 /* SKYNICK XXX */
 	case DIOCCHANGESTATES: {
-		struct pf_state		*s;
+		struct pf_state	*s;
 		struct pf_state_key	*sk;
-		struct pf_addr		*srcaddr, *dstaddr;
-		u_int16_t		 srcport, dstport;
+		struct pf_addr *srcaddr, *dstaddr;
+		u_int16_t	srcport, dstport;
 		struct pfioc_state_change	*psk = (struct pfioc_state_change *)addr;
-		u_int			 i, changed = 0;
-
+		u_int	i, changed = 0;
+		printf("DIOCCHANGESTATES");
 		if (psk->psk_pfcmp.id) {
 			if (psk->psk_pfcmp.creatorid == 0)
 				psk->psk_pfcmp.creatorid = V_pf_status.hostid;
