@@ -1717,6 +1717,82 @@ relock_DIOCKILLSTATES:
 		break;
 	}
 
+/* SKYNICK XXX */
+	case DIOCCHANGESTATES: {
+		struct pf_state		*s;
+		struct pf_state_key	*sk;
+		struct pf_addr		*srcaddr, *dstaddr;
+		u_int16_t		 srcport, dstport;
+		struct pfioc_state_change	*psk = (struct pfioc_state_change *)addr;
+		u_int			 i, changed = 0;
+
+		if (psk->psk_pfcmp.id) {
+			if (psk->psk_pfcmp.creatorid == 0)
+				psk->psk_pfcmp.creatorid = V_pf_status.hostid;
+			if ((s = pf_find_state_byid(psk->psk_pfcmp.id,
+			    psk->psk_pfcmp.creatorid))) {
+				pf_unlink_state(s, PF_ENTER_LOCKED);
+				psk->psk_changed = 1;
+			}
+			break;
+		}
+
+		for (i = 0; i <= pf_hashmask; i++) {
+			struct pf_idhash *ih = &V_pf_idhash[i];
+
+relock_DIOCCHANGESTATES:
+			PF_HASHROW_LOCK(ih);
+			LIST_FOREACH(s, &ih->states, entry) {
+				sk = s->key[PF_SK_WIRE];
+				if (s->direction == PF_OUT) {
+					srcaddr = &sk->addr[1];
+					dstaddr = &sk->addr[0];
+					srcport = sk->port[1];
+					dstport = sk->port[0];
+				} else {
+					srcaddr = &sk->addr[0];
+					dstaddr = &sk->addr[1];
+					srcport = sk->port[0];
+					dstport = sk->port[1];
+				}
+
+				if ((!psk->psk_af || sk->af == psk->psk_af)
+				    && (!psk->psk_proto || psk->psk_proto ==
+				    sk->proto) &&
+				    PF_MATCHA(psk->psk_src.neg,
+				    &psk->psk_src.addr.v.a.addr,
+				    &psk->psk_src.addr.v.a.mask,
+				    srcaddr, sk->af) &&
+				    PF_MATCHA(psk->psk_dst.neg,
+				    &psk->psk_dst.addr.v.a.addr,
+				    &psk->psk_dst.addr.v.a.mask,
+				    dstaddr, sk->af) &&
+				    (psk->psk_src.port_op == 0 ||
+				    pf_match_port(psk->psk_src.port_op,
+				    psk->psk_src.port[0], psk->psk_src.port[1],
+				    srcport)) &&
+				    (psk->psk_dst.port_op == 0 ||
+				    pf_match_port(psk->psk_dst.port_op,
+				    psk->psk_dst.port[0], psk->psk_dst.port[1],
+				    dstport)) &&
+				    (!psk->psk_label[0] ||
+				    (s->rule.ptr->label[0] &&
+				    !strcmp(psk->psk_label,
+				    s->rule.ptr->label))) &&
+				    (!psk->psk_ifname[0] ||
+				    !strcmp(psk->psk_ifname,
+				    s->kif->pfik_name))) {
+					pf_unlink_state(s, PF_ENTER_LOCKED);
+					changed++;
+					goto relock_DIOCCHANGESTATES;
+				}
+			}
+			PF_HASHROW_UNLOCK(ih);
+		}
+		psk->psk_changed = changed;
+		break;
+	}
+
 	case DIOCADDSTATE: {
 		struct pfioc_state	*ps = (struct pfioc_state *)addr;
 		struct pfsync_state	*sp = &ps->state;
