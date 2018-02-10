@@ -801,8 +801,8 @@ pfctl_net_change_states(int dev, const char *iface, int opts)
 					errx(1, "Unknown address family %d",
 					    psk.psk_af);
 
-				if (ioctl(dev, DIOCKILLSTATES, &psk))
-					err(1, "DIOCKILLSTATES");
+				if (ioctl(dev, DIOCCHANGESTATES, &psk))
+					err(1, "DIOCCHANGESTATES");
 				changed += psk.psk_killed;
 			}
 			freeaddrinfo(res[1]);
