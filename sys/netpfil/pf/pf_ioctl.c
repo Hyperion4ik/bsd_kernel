@@ -1645,6 +1645,7 @@ relock_DIOCCLRSTATES:
 	}
 
 	case DIOCKILLSTATES: {
+		printf("YUUUUUPPPPPP\n");				
 		struct pf_state		*s;
 		struct pf_state_key	*sk;
 		struct pf_addr		*srcaddr, *dstaddr;
@@ -1721,6 +1722,7 @@ relock_DIOCKILLSTATES:
 
 /* SKYNICK XXX */
 	case DIOCCHANGESTATES: {
+		printf("HUUUURAAAHHHHHH\n");		
 		struct pf_state	*s;
 		struct pf_state_key	*sk;
 		struct pf_addr *srcaddr, *dstaddr;
