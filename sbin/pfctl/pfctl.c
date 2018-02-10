@@ -76,6 +76,9 @@ int	 pfctl_kill_src_nodes(int, const char *, int);
 int	 pfctl_net_kill_states(int, const char *, int);
 int	 pfctl_label_kill_states(int, const char *, int);
 int	 pfctl_id_kill_states(int, const char *, int);
+int	 pfctl_net_change_states(int, const char *, int);
+int	 pfctl_label_change_states(int, const char *, int);
+int	 pfctl_id_change_states(int, const char *, int);
 void	 pfctl_init_options(struct pfctl *);
 int	 pfctl_load_options(struct pfctl *);
 int	 pfctl_load_limit(struct pfctl *, unsigned int, unsigned int);
@@ -803,13 +806,13 @@ pfctl_net_change_states(int dev, const char *iface, int opts)
 
 				if (ioctl(dev, DIOCCHANGESTATES, &psk))
 					err(1, "DIOCCHANGESTATES");
-				changed += psk.psk_killed;
+				changed += psk.psk_changed;
 			}
 			freeaddrinfo(res[1]);
 		} else {
 			if (ioctl(dev, DIOCCHANGESTATES, &psk))
 				err(1, "DIOCCHANGESTATES");
-			changed += psk.psk_killed;
+			changed += psk.psk_changed;
 		}
 	}
 
@@ -878,7 +881,7 @@ pfctl_id_change_states(int dev, const char *iface, int opts)
 		err(1, "DIOCCHANGESTATES");
 
 	if ((opts & PF_OPT_QUIET) == 0)
-		fprintf(stderr, "changed %d states\n", psk.psk_killed);
+		fprintf(stderr, "changed %d states\n", psk.psk_changed);
 
 	return (0);
 }
