@@ -19,6 +19,8 @@
 		"smp.h": "c",
 		"if.h": "c",
 		"__locale": "c",
-		"thread": "c"
+		"thread": "c",
+		"locale": "cpp",
+		"string": "cpp"
 	}
 }

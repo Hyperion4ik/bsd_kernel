@@ -76,10 +76,12 @@ int	 pfctl_kill_src_nodes(int, const char *, int);
 int	 pfctl_net_kill_states(int, const char *, int);
 int	 pfctl_label_kill_states(int, const char *, int);
 int	 pfctl_id_kill_states(int, const char *, int);
+/* SKYNICK XXX */
 int	 pfctl_net_change_states(int, const char *, int);
 int	 pfctl_label_change_states(int, const char *, int);
 int	 pfctl_id_change_states(int, const char *, int);
-void	 pfctl_init_options(struct pfctl *);
+/* SKYNICK */
+void pfctl_init_options(struct pfctl *);
 int	 pfctl_load_options(struct pfctl *);
 int	 pfctl_load_limit(struct pfctl *, unsigned int, unsigned int);
 int	 pfctl_load_timeout(struct pfctl *, unsigned int, unsigned int);
@@ -819,7 +821,7 @@ pfctl_net_change_states(int dev, const char *iface, int opts)
 	freeaddrinfo(res[0]);
 
 	if ((opts & PF_OPT_QUIET) == 0)
-		fprintf(stderr, "chnaged %d states from %d sources and %d "
+		fprintf(stderr, "changed %d states from %d sources and %d "
 		    "destinations\n", changed, sources, dests);
 	return (0);
 }
@@ -2499,6 +2501,9 @@ main(int argc, char *argv[])
 			break;
 		}
 	}
+	printf("state_killers: %i \n", state_killers);
+	printf("state_changers: %i \n", state_changers);
+
 	if (state_killers) {
 		if (!strcmp(state_kill[0], "label"))
 			pfctl_label_kill_states(dev, ifaceopt, opts);
