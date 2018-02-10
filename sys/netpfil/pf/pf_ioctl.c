@@ -991,7 +991,7 @@ static int
 pfioctl(struct cdev *dev, u_long cmd, caddr_t addr, int flags, struct thread *td)
 {
 	int			 error = 0;
-	print("pfioctl\n");
+	printf("pfioctl\n");
 	/* XXX keep in sync with switch() below */
 	if (securelevel_gt(td->td_ucred, 2))
 		switch (cmd) {
