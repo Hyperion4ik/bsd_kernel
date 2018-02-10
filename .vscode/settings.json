@@ -21,6 +21,7 @@
 		"__locale": "c",
 		"thread": "c",
 		"locale": "cpp",
-		"string": "cpp"
+		"string": "cpp",
+		"memory": "c"
 	}
 }
