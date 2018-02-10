@@ -2517,9 +2517,9 @@ main(int argc, char *argv[])
 	if (state_changers) {
 		printf("state_change[0] = %s\n", state_change[0]);
 		printf("state_change[1] = %s\n", state_change[1]);
-		printf("dev = %s\n", dev);
+		printf("dev = %i\n", dev);
 		printf("ifcaceopt = %s\n", ifaceopt);
-		printf("opts = %s\n", opts);
+		printf("opts = %i\n", opts);
 		if (!strcmp(state_change[0], "label"))
 			pfctl_label_change_states(dev, ifaceopt, opts);
 		else if (!strcmp(state_change[0], "id"))
