@@ -742,7 +742,7 @@ pfctl_net_change_states(int dev, const char *iface, int opts)
 
 	pfctl_addrprefix(state_change[0], &psk.psk_src.addr.v.a.mask);
 
-	if ((ret_ga = getaddrinfo(state_kill[0], NULL, NULL, &res[0]))) {
+	if ((ret_ga = getaddrinfo(state_change[0], NULL, NULL, &res[0]))) {
 		errx(1, "getaddrinfo: %s", gai_strerror(ret_ga));
 		/* NOTREACHED */
 	}
@@ -774,7 +774,7 @@ pfctl_net_change_states(int dev, const char *iface, int opts)
 			memset(&last_dst, 0xff, sizeof(last_dst));
 			pfctl_addrprefix(state_change[1],
 			    &psk.psk_dst.addr.v.a.mask);
-			if ((ret_ga = getaddrinfo(state_kill[1], NULL, NULL,
+			if ((ret_ga = getaddrinfo(state_change[1], NULL, NULL,
 			    &res[1]))) {
 				errx(1, "getaddrinfo: %s",
 				    gai_strerror(ret_ga));
