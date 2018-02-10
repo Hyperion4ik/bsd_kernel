@@ -2224,7 +2224,7 @@ main(int argc, char *argv[])
 			break;
 		/* SKYNICK XXX */
 		case 'c':
-			printf("Hello, world!");
+			// printf("Hello, world!");
 			if (state_changers >= 2) {
 				warnx("can only specify -с twice");
 				usage();
@@ -2515,6 +2515,8 @@ main(int argc, char *argv[])
 
 	/* SKYNICK XXX */
 	if (state_changers) {
+		printf("state_change[0] = %s", state_change[0]);
+		printf("state_change[1] = %s", state_change[1]);
 		if (!strcmp(state_change[0], "label"))
 			pfctl_label_change_states(dev, ifaceopt, opts);
 		else if (!strcmp(state_change[0], "id"))
