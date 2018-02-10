@@ -815,8 +815,8 @@ pfctl_net_change_states(int dev, const char *iface, int opts)
 			}
 			freeaddrinfo(res[1]);
 		} else {
-			printf("change_12");
-			printf("DIOCCHANGESTATES = %lu", DIOCCHANGESTATES);
+			printf("change_12\n");
+			printf("DIOCCHANGESTATES = %lu \n", DIOCCHANGESTATES);
 			if (ioctl(dev, DIOCCHANGESTATES, &psk))
 				err(1, "DIOCCHANGESTATES");
 			changed += psk.psk_changed;
