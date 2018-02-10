@@ -75,6 +75,8 @@ __FBSDID("$FreeBSD: releng/11.1/sys/netpfil/pf/pf_ioctl.c 304282 2016-08-17 09:2
 
 #include <netinet/in.h>
 #include <netinet/ip.h>
+/* SKYNICK XXX */
+#include <netinet/tcp_fsm.h>
 #include <netinet/ip_var.h>
 #include <netinet6/ip6_var.h>
 #include <netinet/ip_icmp.h>

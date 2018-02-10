@@ -17,6 +17,8 @@
 		"proc.h": "c",
 		"rwlock.h": "c",
 		"smp.h": "c",
-		"if.h": "c"
+		"if.h": "c",
+		"__locale": "c",
+		"thread": "c"
 	}
 }

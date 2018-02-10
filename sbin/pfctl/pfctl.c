@@ -119,6 +119,8 @@ int		 src_node_killers;
 char		*src_node_kill[2];
 int		 state_killers;
 char		*state_kill[2];
+int		 state_changers;
+char		*state_change[2];
 int		 loadopt;
 int		 altqsupport;
 
@@ -711,6 +713,178 @@ pfctl_id_kill_states(int dev, const char *iface, int opts)
 
 	return (0);
 }
+
+/* SCKYNICK XXX */
+int
+pfctl_net_change_states(int dev, const char *iface, int opts)
+{
+	struct pfioc_state_change psk;
+	struct addrinfo *res[2], *resp[2];
+	struct sockaddr last_src, last_dst;
+	int changed, sources, dests;
+	int ret_ga;
+
+	changed = sources = dests = 0;
+
+	memset(&psk, 0, sizeof(psk));
+	memset(&psk.psk_src.addr.v.a.mask, 0xff,
+	    sizeof(psk.psk_src.addr.v.a.mask));
+	memset(&last_src, 0xff, sizeof(last_src));
+	memset(&last_dst, 0xff, sizeof(last_dst));
+	if (iface != NULL && strlcpy(psk.psk_ifname, iface,
+	    sizeof(psk.psk_ifname)) >= sizeof(psk.psk_ifname))
+		errx(1, "invalid interface: %s", iface);
+
+	pfctl_addrprefix(state_change[0], &psk.psk_src.addr.v.a.mask);
+
+	if ((ret_ga = getaddrinfo(state_kill[0], NULL, NULL, &res[0]))) {
+		errx(1, "getaddrinfo: %s", gai_strerror(ret_ga));
+		/* NOTREACHED */
+	}
+	for (resp[0] = res[0]; resp[0]; resp[0] = resp[0]->ai_next) {
+		if (resp[0]->ai_addr == NULL)
+			continue;
+		/* We get lots of duplicates.  Catch the easy ones */
+		if (memcmp(&last_src, resp[0]->ai_addr, sizeof(last_src)) == 0)
+			continue;
+		last_src = *(struct sockaddr *)resp[0]->ai_addr;
+
+		psk.psk_af = resp[0]->ai_family;
+		sources++;
+
+		if (psk.psk_af == AF_INET)
+			psk.psk_src.addr.v.a.addr.v4 =
+			    ((struct sockaddr_in *)resp[0]->ai_addr)->sin_addr;
+		else if (psk.psk_af == AF_INET6)
+			psk.psk_src.addr.v.a.addr.v6 =
+			    ((struct sockaddr_in6 *)resp[0]->ai_addr)->
+			    sin6_addr;
+		else
+			errx(1, "Unknown address family %d", psk.psk_af);
+
+		if (state_changers > 1) {
+			dests = 0;
+			memset(&psk.psk_dst.addr.v.a.mask, 0xff,
+			    sizeof(psk.psk_dst.addr.v.a.mask));
+			memset(&last_dst, 0xff, sizeof(last_dst));
+			pfctl_addrprefix(state_change[1],
+			    &psk.psk_dst.addr.v.a.mask);
+			if ((ret_ga = getaddrinfo(state_kill[1], NULL, NULL,
+			    &res[1]))) {
+				errx(1, "getaddrinfo: %s",
+				    gai_strerror(ret_ga));
+				/* NOTREACHED */
+			}
+			for (resp[1] = res[1]; resp[1];
+			    resp[1] = resp[1]->ai_next) {
+				if (resp[1]->ai_addr == NULL)
+					continue;
+				if (psk.psk_af != resp[1]->ai_family)
+					continue;
+
+				if (memcmp(&last_dst, resp[1]->ai_addr,
+				    sizeof(last_dst)) == 0)
+					continue;
+				last_dst = *(struct sockaddr *)resp[1]->ai_addr;
+
+				dests++;
+
+				if (psk.psk_af == AF_INET)
+					psk.psk_dst.addr.v.a.addr.v4 =
+					    ((struct sockaddr_in *)resp[1]->
+					    ai_addr)->sin_addr;
+				else if (psk.psk_af == AF_INET6)
+					psk.psk_dst.addr.v.a.addr.v6 =
+					    ((struct sockaddr_in6 *)resp[1]->
+					    ai_addr)->sin6_addr;
+				else
+					errx(1, "Unknown address family %d",
+					    psk.psk_af);
+
+				if (ioctl(dev, DIOCKILLSTATES, &psk))
+					err(1, "DIOCKILLSTATES");
+				changed += psk.psk_killed;
+			}
+			freeaddrinfo(res[1]);
+		} else {
+			if (ioctl(dev, DIOCCHANGESTATES, &psk))
+				err(1, "DIOCCHANGESTATES");
+			changed += psk.psk_killed;
+		}
+	}
+
+	freeaddrinfo(res[0]);
+
+	if ((opts & PF_OPT_QUIET) == 0)
+		fprintf(stderr, "chnaged %d states from %d sources and %d "
+		    "destinations\n", changed, sources, dests);
+	return (0);
+}
+
+int
+pfctl_label_change_states(int dev, const char *iface, int opts)
+{
+	struct pfioc_state_change psk;
+
+	if (state_changers != 2 || (strlen(state_change[1]) == 0)) {
+		warnx("no label specified");
+		usage();
+	}
+	memset(&psk, 0, sizeof(psk));
+	if (iface != NULL && strlcpy(psk.psk_ifname, iface,
+	    sizeof(psk.psk_ifname)) >= sizeof(psk.psk_ifname))
+		errx(1, "invalid interface: %s", iface);
+
+	if (strlcpy(psk.psk_label, state_change[1], sizeof(psk.psk_label)) >=
+	    sizeof(psk.psk_label))
+		errx(1, "label too long: %s", state_change[1]);
+
+	if (ioctl(dev, DIOCCHANGESTATES, &psk))
+		err(1, "DIOCCHANGESTATES");
+
+	if ((opts & PF_OPT_QUIET) == 0)
+		fprintf(stderr, "changed %d states\n", psk.psk_changed);
+
+	return (0);
+}
+
+int
+pfctl_id_change_states(int dev, const char *iface, int opts)
+{
+	struct pfioc_state_change psk;
+	
+	if (state_changers != 2 || (strlen(state_change[1]) == 0)) {
+		warnx("no id specified");
+		usage();
+	}
+
+	memset(&psk, 0, sizeof(psk));
+	if ((sscanf(state_change[1], "%jx/%x",
+	    &psk.psk_pfcmp.id, &psk.psk_pfcmp.creatorid)) == 2)
+		HTONL(psk.psk_pfcmp.creatorid);
+	else if ((sscanf(state_change[1], "%jx", &psk.psk_pfcmp.id)) == 1) {
+		psk.psk_pfcmp.creatorid = 0;
+	} else {
+		warnx("wrong id format specified");
+		usage();
+	}
+	if (psk.psk_pfcmp.id == 0) {
+		warnx("cannot change id 0");
+		usage();
+	}
+
+	psk.psk_pfcmp.id = htobe64(psk.psk_pfcmp.id);
+	if (ioctl(dev, DIOCCHANGESTATES, &psk))
+		err(1, "DIOCCHANGESTATES");
+
+	if ((opts & PF_OPT_QUIET) == 0)
+		fprintf(stderr, "changed %d states\n", psk.psk_killed);
+
+	return (0);
+}
+
+/* SKYNICK */
+
 
 int
 pfctl_get_pool(int dev, struct pf_pool *pool, u_int32_t nr,
@@ -2002,7 +2176,7 @@ main(int argc, char *argv[])
 		usage();
 /* SKYNICK XXX */
 	while ((ch = getopt(argc, argv,
-	    "a:AdD:eqf:F:ghi:k:K:c:mnNOo:Pp:rRs:t:T:vx:z")) != -1) {
+	    "a:AdD:eqf:F:ghi:k:c:K:mnNOo:Pp:rRs:t:T:vx:z")) != -1) {
 		switch (ch) {
 		case 'a':
 			anchoropt = optarg;
@@ -2041,6 +2215,16 @@ main(int argc, char *argv[])
 				/* NOTREACHED */
 			}
 			state_kill[state_killers++] = optarg;
+			mode = O_RDWR;
+			break;
+		/* SKYNICK XXX */
+		case 'c':
+			printf("Hello, world!");
+			if (state_changers >= 2) {
+				warnx("can only specify -с twice");
+				usage();
+			}
+			state_change[state_changers++] = optarg;
 			mode = O_RDWR;
 			break;
 		case 'K':
@@ -2127,10 +2311,6 @@ main(int argc, char *argv[])
 		case 'z':
 			opts |= PF_OPT_CLRRULECTRS;
 			mode = O_RDWR;
-			break;
-		/* SKYNICK XXX */
-		case 'c':
-			printf("Hello, world!");
 			break;
 		case 'h':
 			/* FALLTHROUGH */
@@ -2324,6 +2504,18 @@ main(int argc, char *argv[])
 		else
 			pfctl_net_kill_states(dev, ifaceopt, opts);
 	}
+
+	/* SKYNICK XXX */
+	if (state_changers) {
+		if (!strcmp(state_change[0], "label"))
+			pfctl_label_change_states(dev, ifaceopt, opts);
+		else if (!strcmp(state_change[0], "id"))
+			pfctl_id_change_states(dev, ifaceopt, opts);
+		else
+			pfctl_net_change_states(dev, ifaceopt, opts);
+	}
+	/* SKYNICK */
+
 
 	if (src_node_killers)
 		pfctl_kill_src_nodes(dev, ifaceopt, opts);
