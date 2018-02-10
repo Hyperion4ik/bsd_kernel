@@ -636,13 +636,14 @@ pfctl_net_kill_states(int dev, const char *iface, int opts)
 				else
 					errx(1, "Unknown address family %d",
 					    psk.psk_af);
-
+				printf("kill_11\n");
 				if (ioctl(dev, DIOCKILLSTATES, &psk))
 					err(1, "DIOCKILLSTATES");
 				killed += psk.psk_killed;
 			}
 			freeaddrinfo(res[1]);
 		} else {
+			printf("kill_12\n");
 			if (ioctl(dev, DIOCKILLSTATES, &psk))
 				err(1, "DIOCKILLSTATES");
 			killed += psk.psk_killed;
@@ -675,6 +676,7 @@ pfctl_label_kill_states(int dev, const char *iface, int opts)
 	    sizeof(psk.psk_label))
 		errx(1, "label too long: %s", state_kill[1]);
 
+	printf("kill_2\n");
 	if (ioctl(dev, DIOCKILLSTATES, &psk))
 		err(1, "DIOCKILLSTATES");
 
@@ -710,6 +712,7 @@ pfctl_id_kill_states(int dev, const char *iface, int opts)
 	}
 
 	psk.psk_pfcmp.id = htobe64(psk.psk_pfcmp.id);
+	printf("kill_3\n");
 	if (ioctl(dev, DIOCKILLSTATES, &psk))
 		err(1, "DIOCKILLSTATES");
 
@@ -805,13 +808,14 @@ pfctl_net_change_states(int dev, const char *iface, int opts)
 				else
 					errx(1, "Unknown address family %d",
 					    psk.psk_af);
-
+				printf("change_11");
 				if (ioctl(dev, DIOCCHANGESTATES, &psk))
 					err(1, "DIOCCHANGESTATES");
 				changed += psk.psk_changed;
 			}
 			freeaddrinfo(res[1]);
 		} else {
+			printf("change_12");
 			if (ioctl(dev, DIOCCHANGESTATES, &psk))
 				err(1, "DIOCCHANGESTATES");
 			changed += psk.psk_changed;
@@ -843,7 +847,7 @@ pfctl_label_change_states(int dev, const char *iface, int opts)
 	if (strlcpy(psk.psk_label, state_change[1], sizeof(psk.psk_label)) >=
 	    sizeof(psk.psk_label))
 		errx(1, "label too long: %s", state_change[1]);
-	printf("ioctl_1\n");
+	printf("change_2\n");
 	if (ioctl(dev, DIOCCHANGESTATES, &psk))
 		err(1, "DIOCCHANGESTATES");
 
@@ -878,7 +882,7 @@ pfctl_id_change_states(int dev, const char *iface, int opts)
 		usage();
 	}
 
-	printf("ioctl_2\n");
+	printf("change_3\n");
 	psk.psk_pfcmp.id = htobe64(psk.psk_pfcmp.id);
 	if (ioctl(dev, DIOCCHANGESTATES, &psk))
 		err(1, "DIOCCHANGESTATES");
@@ -905,7 +909,6 @@ pfctl_get_pool(int dev, struct pf_pool *pool, u_int32_t nr,
 	pp.r_action = r_action;
 	pp.r_num = nr;
 	pp.ticket = ticket;
-	printf("ioctl_3\n");
 	if (ioctl(dev, DIOCGETADDRS, &pp)) {
 		warn("DIOCGETADDRS");
 		return (-1);
