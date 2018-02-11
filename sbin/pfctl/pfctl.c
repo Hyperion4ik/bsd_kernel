@@ -2230,7 +2230,7 @@ main(int argc, char *argv[])
 			break;
 		/* SKYNICK XXX */
 		case 'c':
-			printf("Hello, с!\т");
+			printf("Hello, с!\n");
 			if (state_changers >= 2) {
 				warnx("can only specify -с twice");
 				usage();
