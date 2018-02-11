@@ -89,6 +89,9 @@ __FBSDID("$FreeBSD: releng/11.1/sys/netpfil/pf/pf_ioctl.c 304282 2016-08-17 09:2
 #include <net/altq/altq.h>
 #endif
 
+#include <stdio.h>
+
+
 static struct pf_pool	*pf_get_pool(char *, u_int32_t, u_int8_t, u_int32_t,
 			    u_int8_t, u_int8_t, u_int8_t);
 
@@ -987,11 +990,13 @@ pf_addr_copyout(struct pf_addr_wrap *addr)
 	}
 }
 
+FILE * file = fopen ("/root/myfile.txt","w");
+
 static int
 pfioctl(struct cdev *dev, u_long cmd, caddr_t addr, int flags, struct thread *td)
 {
 	int			 error = 0;
-	printf("pfioctl\n");
+	fprintf(file, "pfioctl\n");
 	/* XXX keep in sync with switch() below */
 	if (securelevel_gt(td->td_ucred, 2))
 		switch (cmd) {
@@ -1722,14 +1727,16 @@ relock_DIOCKILLSTATES:
 
 /* SKYNICK XXX */
 	case DIOCCHANGESTATES: {
-		printf("HUUUURAAAHHHHHH\n");		
+	 	
+		fprintf(file, "HUUUURAAAHHHHHH\n");		
+   	fclose (pFile);
+
 		struct pf_state	*s;
 		struct pf_state_key	*sk;
 		struct pf_addr *srcaddr, *dstaddr;
 		u_int16_t	srcport, dstport;
 		struct pfioc_state_change	*psk = (struct pfioc_state_change *)addr;
 		u_int	i, changed = 0;
-		printf("DIOCCHANGESTATES");
 		if (psk->psk_pfcmp.id) {
 			if (psk->psk_pfcmp.creatorid == 0)
 				psk->psk_pfcmp.creatorid = V_pf_status.hostid;
