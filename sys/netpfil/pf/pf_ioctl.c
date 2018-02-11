@@ -89,8 +89,6 @@ __FBSDID("$FreeBSD: releng/11.1/sys/netpfil/pf/pf_ioctl.c 304282 2016-08-17 09:2
 #include <net/altq/altq.h>
 #endif
 
-#include <stdio.h>
-
 
 static struct pf_pool	*pf_get_pool(char *, u_int32_t, u_int8_t, u_int32_t,
 			    u_int8_t, u_int8_t, u_int8_t);
