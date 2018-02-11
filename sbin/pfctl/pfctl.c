@@ -2205,6 +2205,7 @@ main(int argc, char *argv[])
 			opts |= PF_OPT_QUIET;
 			break;
 		case 'F':
+			printf("Hello, world!");
 			clearopt = pfctl_lookup_option(optarg, clearopt_list);
 			printf("clearopt: %s \n", clearopt);
 			printf("optarg: %s \n", optarg);
