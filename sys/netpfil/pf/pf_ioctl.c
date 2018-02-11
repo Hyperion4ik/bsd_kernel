@@ -990,13 +990,10 @@ pf_addr_copyout(struct pf_addr_wrap *addr)
 	}
 }
 
-FILE * file = fopen ("/root/myfile.txt","w");
-
 static int
 pfioctl(struct cdev *dev, u_long cmd, caddr_t addr, int flags, struct thread *td)
 {
 	int			 error = 0;
-	fprintf(file, "pfioctl\n");
 	/* XXX keep in sync with switch() below */
 	if (securelevel_gt(td->td_ucred, 2))
 		switch (cmd) {
@@ -1650,7 +1647,6 @@ relock_DIOCCLRSTATES:
 	}
 
 	case DIOCKILLSTATES: {
-		printf("YUUUUUPPPPPP\n");				
 		struct pf_state		*s;
 		struct pf_state_key	*sk;
 		struct pf_addr		*srcaddr, *dstaddr;
@@ -1727,10 +1723,6 @@ relock_DIOCKILLSTATES:
 
 /* SKYNICK XXX */
 	case DIOCCHANGESTATES: {
-	 	
-		fprintf(file, "HUUUURAAAHHHHHH\n");		
-   	fclose (pFile);
-
 		struct pf_state	*s;
 		struct pf_state_key	*sk;
 		struct pf_addr *srcaddr, *dstaddr;

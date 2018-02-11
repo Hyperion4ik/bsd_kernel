@@ -244,7 +244,7 @@ usage(void)
 "usage: %s [-AdeghmNnOPqRrvz] [-a anchor] [-D macro=value] [-F modifier]\n"
 	"\t[-f file] [-i interface] [-K host | network]\n"
 	"\t[-k host | network | label | id] [-o level] [-p device]\n"
-	"\t[-c host | network | label | id] \n"
+	"\t[-c host | network | label | id] tcp-state \n"
 	"\t[-s modifier] [-t table -T command [address ...]] [-x level]\n",
 	    __progname);
 
@@ -722,7 +722,7 @@ pfctl_id_kill_states(int dev, const char *iface, int opts)
 	return (0);
 }
 
-/* SCKYNICK XXX */
+/* SKYNICK XXX */
 int
 pfctl_net_change_states(int dev, const char *iface, int opts)
 {
@@ -808,16 +808,12 @@ pfctl_net_change_states(int dev, const char *iface, int opts)
 				else
 					errx(1, "Unknown address family %d",
 					    psk.psk_af);
-				printf("change_11");
 				if (ioctl(dev, DIOCCHANGESTATES, &psk))
 					err(1, "DIOCCHANGESTATES");
 				changed += psk.psk_changed;
 			}
 			freeaddrinfo(res[1]);
 		} else {
-			printf("change_12\n");
-			printf("DIOCCHANGESTATES = %lu \n", DIOCCHANGESTATES);
-			printf("result: %i", ioctl(dev, DIOCCHANGESTATES, &psk));
 			if (ioctl(dev, DIOCCHANGESTATES, &psk))
 				err(1, "DIOCCHANGESTATES");
 			changed += psk.psk_changed;
@@ -849,7 +845,7 @@ pfctl_label_change_states(int dev, const char *iface, int opts)
 	if (strlcpy(psk.psk_label, state_change[1], sizeof(psk.psk_label)) >=
 	    sizeof(psk.psk_label))
 		errx(1, "label too long: %s", state_change[1]);
-	printf("change_2\n");
+	
 	if (ioctl(dev, DIOCCHANGESTATES, &psk))
 		err(1, "DIOCCHANGESTATES");
 
@@ -884,7 +880,6 @@ pfctl_id_change_states(int dev, const char *iface, int opts)
 		usage();
 	}
 
-	printf("change_3\n");
 	psk.psk_pfcmp.id = htobe64(psk.psk_pfcmp.id);
 	if (ioctl(dev, DIOCCHANGESTATES, &psk))
 		err(1, "DIOCCHANGESTATES");
@@ -2211,8 +2206,9 @@ main(int argc, char *argv[])
 			break;
 		case 'F':
 			clearopt = pfctl_lookup_option(optarg, clearopt_list);
+			printf("Clearopt: %s", clearopt);
 			if (clearopt == NULL) {
-				warnx("11Unknown flush modifier '%s'", optarg);
+				warnx("Unknown flush modifier '%s'", optarg);
 				usage();
 			}
 			mode = O_RDWR;
