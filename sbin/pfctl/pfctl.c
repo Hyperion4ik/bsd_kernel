@@ -2206,7 +2206,9 @@ main(int argc, char *argv[])
 			break;
 		case 'F':
 			clearopt = pfctl_lookup_option(optarg, clearopt_list);
-			printf("Clearopt: %s", clearopt);
+			printf("clearopt: %s \n", clearopt);
+			printf("optarg: %s \n", optarg);
+			printf("clearopt_list: %s \n", clearopt_list);
 			if (clearopt == NULL) {
 				warnx("Unknown flush modifier '%s'", optarg);
 				usage();
