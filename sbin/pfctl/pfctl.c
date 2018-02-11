@@ -2170,7 +2170,6 @@ pfctl_lookup_option(char *cmd, const char **list)
 int
 main(int argc, char *argv[])
 {
-	printf("bingo\n");
 	int	 error = 0;
 	int	 ch;
 	int	 mode = O_RDONLY;
@@ -2205,10 +2204,9 @@ main(int argc, char *argv[])
 			opts |= PF_OPT_QUIET;
 			break;
 		case 'F':
-			printf("Hello, world!\n");
+			printf("Flush!\n");
 			clearopt = pfctl_lookup_option(optarg, clearopt_list);
 			printf("clearopt: %s \n", clearopt);
-			printf("optarg: %s \n", optarg);
 			if (clearopt == NULL) {
 				warnx("Unknown flush modifier '%s'", optarg);
 				usage();
