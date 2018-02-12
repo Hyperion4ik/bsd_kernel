@@ -2185,8 +2185,8 @@ main(int argc, char *argv[])
 	    "a:AdD:eqf:F:ghi:k:c:K:mnNOo:Pp:rRs:t:T:vx:z")) != -1) {
 		switch (ch) {
 		case 'a':
-			printf('anchoropt = %s', anchoropt);
-			printf('optarg = %s', optarg);
+			printf('anchoropt = %i', anchoropt);
+			printf('optarg = %i', optarg);
 			anchoropt = optarg;
 			break;
 		case 'd':
