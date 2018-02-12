@@ -823,6 +823,7 @@ pfctl_net_change_states(int dev, const char *iface, int opts)
 	}
 
 	freeaddrinfo(res[0]);
+	printf("opts: %s", opts);
 
 	if ((opts & PF_OPT_QUIET) == 0)
 		fprintf(stderr, "changed %d states from %d sources and %d "
@@ -2511,8 +2512,6 @@ main(int argc, char *argv[])
 			break;
 		}
 	}
-	printf("state_killers: %i \n", state_killers);
-	printf("state_changers: %i \n", state_changers);
 
 	if (state_killers) {
 		if (!strcmp(state_kill[0], "label"))
@@ -2525,11 +2524,6 @@ main(int argc, char *argv[])
 
 	/* SKYNICK XXX */
 	if (state_changers) {
-		printf("state_change[0] = %s\n", state_change[0]);
-		printf("state_change[1] = %s\n", state_change[1]);
-		printf("dev = %i\n", dev);
-		printf("ifcaceopt = %s\n", ifaceopt);
-		printf("opts = %i\n", opts);
 		if (!strcmp(state_change[0], "label"))
 			pfctl_label_change_states(dev, ifaceopt, opts);
 		else if (!strcmp(state_change[0], "id"))

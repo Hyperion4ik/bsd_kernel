@@ -41,3 +41,4 @@ In the case of TCP, the finite state machine can be considered to describe the â
 ```
 
 pfctl -c 127.0.0.1 -c 127.0.128 -tcpstate ESTABLISHED
+pfctl -c 127.0.0.1 -c 127.0.128 -tcpstate CLOSE_WAIT
