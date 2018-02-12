@@ -244,7 +244,7 @@ usage(void)
 "usage: %s [-AdeghmNnOPqRrvz] [-a anchor] [-D macro=value] [-F modifier]\n"
 	"\t[-f file] [-i interface] [-K host | network]\n"
 	"\t[-k host | network | label | id] [-o level] [-p device]\n"
-	"\t[-c host | network | label | id] tcp-state \n"
+	"\t[-c host | network | label | id] [-u status] \n"
 	"\t[-s modifier] [-t table -T command [address ...]] [-x level]\n",
 	    __progname);
 
@@ -2185,6 +2185,8 @@ main(int argc, char *argv[])
 	    "a:AdD:eqf:F:ghi:k:c:K:mnNOo:Pp:rRs:t:T:vx:z")) != -1) {
 		switch (ch) {
 		case 'a':
+			printf('anchoropt = %s', anchoropt);
+			printf('optarg = %s', optarg);
 			anchoropt = optarg;
 			break;
 		case 'd':
@@ -2227,7 +2229,19 @@ main(int argc, char *argv[])
 			break;
 		/* SKYNICK XXX */
 		case 'c':
-			printf("Hello, с!\n");
+
+		/*
+					printf("Flush!\n");
+			clearopt = pfctl_lookup_option(optarg, clearopt_list);
+			printf("clearopt: %s \n", clearopt);
+			if (clearopt == NULL) {
+				warnx("Unknown flush modifier '%s'", optarg);
+				usage();
+			}
+			mode = O_RDWR;
+			break;
+			*/
+			printf("changing state!\n");
 			if (state_changers >= 2) {
 				warnx("can only specify -с twice");
 				usage();
