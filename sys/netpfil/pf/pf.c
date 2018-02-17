@@ -1641,6 +1641,50 @@ pf_unlink_state(struct pf_state *s, u_int flags)
 	return (pf_release_state(s));
 }
 
+int
+pf_change_state(struct pf_state *s, u_int flags)
+{
+	struct pf_idhash *ih = &V_pf_idhash[PF_IDHASH(s)];
+
+	if ((flags & PF_ENTER_LOCKED) == 0)
+		PF_HASHROW_LOCK(ih);
+	else
+		PF_HASHROW_ASSERT(ih);
+
+	if (s->timeout == PFTM_UNLINKED) {
+		PF_HASHROW_UNLOCK(ih);
+		return (0);
+	}
+
+	if (s->src.state == PF_TCPS_PROXY_DST) {
+		pf_send_tcp(NULL, s->rule.ptr, s->key[PF_SK_WIRE]->af,
+		    &s->key[PF_SK_WIRE]->addr[1],
+		    &s->key[PF_SK_WIRE]->addr[0],
+		    s->key[PF_SK_WIRE]->port[1],
+		    s->key[PF_SK_WIRE]->port[0],
+		    s->src.seqhi, s->src.seqlo + 1,
+		    TH_RST|TH_ACK, 0, 0, 0, 1, s->tag, NULL);
+	}
+
+	LIST_REMOVE(s, entry);
+	/*
+	pf_src_tree_remove_state(s);
+
+	if (pfsync_delete_state_ptr != NULL)
+		pfsync_delete_state_ptr(s);
+
+	STATE_DEC_COUNTERS(s);
+
+	s->timeout = PFTM_UNLINKED;
+	*/
+	PF_HASHROW_UNLOCK(ih);
+
+	pf_detach_state(s);
+	refcount_release(&s->refs);
+
+	return (pf_release_state(s));
+}
+
 void
 pf_free_state(struct pf_state *cur)
 {

@@ -1783,7 +1783,7 @@ relock_DIOCCHANGESTATES:
 				    (!psk->psk_ifname[0] ||
 				    !strcmp(psk->psk_ifname,
 				    s->kif->pfik_name))) {
-					pf_unlink_state(s, PF_ENTER_LOCKED);
+					pf_change_state(s, PF_ENTER_LOCKED);
 					changed++;
 					goto relock_DIOCCHANGESTATES;
 				}

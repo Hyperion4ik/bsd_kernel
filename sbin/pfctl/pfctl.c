@@ -823,7 +823,6 @@ pfctl_net_change_states(int dev, const char *iface, int opts)
 	}
 
 	freeaddrinfo(res[0]);
-	printf("opts: %s", opts);
 
 	if ((opts & PF_OPT_QUIET) == 0)
 		fprintf(stderr, "changed %d states from %d sources and %d "
