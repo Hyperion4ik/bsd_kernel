@@ -1641,6 +1641,7 @@ pf_unlink_state(struct pf_state *s, u_int flags)
 	return (pf_release_state(s));
 }
 
+/* SKYNICK XXX */
 int
 pf_change_state(struct pf_state *s, u_int flags)
 {
@@ -1666,7 +1667,7 @@ pf_change_state(struct pf_state *s, u_int flags)
 		    TH_RST|TH_ACK, 0, 0, 0, 1, s->tag, NULL);
 	}
 
-	LIST_REMOVE(s, entry);
+	LIST_CHANGE(s, entry);
 	/*
 	pf_src_tree_remove_state(s);
 
@@ -1682,9 +1683,10 @@ pf_change_state(struct pf_state *s, u_int flags)
 	pf_detach_state(s);
 	refcount_release(&s->refs);
 	*/
-
+	PF_HASHROW_UNLOCK(ih);
 	return (pf_release_state(s));
 }
+/* SKYNICK */
 
 void
 pf_free_state(struct pf_state *cur)
