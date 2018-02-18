@@ -1667,7 +1667,7 @@ pf_change_state(struct pf_state *s, u_int flags)
 	}
 
 	LIST_REMOVE(s, entry);
-
+	/*
 	pf_src_tree_remove_state(s);
 
 	if (pfsync_delete_state_ptr != NULL)
@@ -1681,6 +1681,7 @@ pf_change_state(struct pf_state *s, u_int flags)
 
 	pf_detach_state(s);
 	refcount_release(&s->refs);
+	*/
 
 	return (pf_release_state(s));
 }
