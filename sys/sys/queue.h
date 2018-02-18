@@ -554,6 +554,7 @@ struct {								\
 	TRASHIT(*oldprev);						\
 } while (0)
 
+
 /* SKYNICK XXX */
 #define	LIST_СHANGE(elm, field) do {					\
 	QMD_SAVELINK(oldnext, (elm)->field.le_next);			\
@@ -568,6 +569,7 @@ struct {								\
 	TRASHIT(*oldprev);						\
 } while (0)
 /* SKYNICK */
+
 
 #define LIST_SWAP(head1, head2, type, field) do {			\
 	QUEUE_TYPEOF(type) *swap_tmp = LIST_FIRST(head1);		\
