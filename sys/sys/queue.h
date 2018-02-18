@@ -565,8 +565,6 @@ struct {								\
 		LIST_NEXT((elm), field)->field.le_prev = 		\
 		    (elm)->field.le_prev;				\
 	*(elm)->field.le_prev = LIST_NEXT((elm), field);		\
-	TRASHIT(*oldnext);						\
-	TRASHIT(*oldprev);						\
 } while (0)
 /* SKYNICK */
 
