@@ -1537,6 +1537,9 @@ extern void			 pf_intr(void *);
 extern void			 pf_purge_expired_src_nodes(void);
 
 extern int			 pf_unlink_state(struct pf_state *, u_int);
+/* SKYNICK XXX */
+extern int			 pf_change_state(struct pf_state *, u_int);
+/* SKYNICK */
 #define	PF_ENTER_LOCKED		0x00000001
 #define	PF_RETURN_LOCKED	0x00000002
 extern int			 pf_state_insert(struct pfi_kif *,
