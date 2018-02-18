@@ -2229,12 +2229,12 @@ main(int argc, char *argv[])
 			break;
 		/* SKYNICK XXX */
 		case 'c':
-			printf("optarg: %s \n", optarg);
+			/*printf("optarg: %s \n", optarg);
 			tblcmdopt = pfctl_lookup_option(optarg, tblcmdopt_list);
 			if (tblcmdopt == NULL) {
 				warnx("Unknown table command '%s'", optarg);
 				usage();
-			}
+			} */
 			if (state_changers >= 2) {
 				warnx("can only specify -с twice");
 				usage();
