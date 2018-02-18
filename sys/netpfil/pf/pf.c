@@ -1666,8 +1666,8 @@ pf_change_state(struct pf_state *s, u_int flags)
 		    TH_RST|TH_ACK, 0, 0, 0, 1, s->tag, NULL);
 	}
 
-	LIST_CHANGE(s, entry);
-	/*
+	LIST_REMOVE(s, entry);
+
 	pf_src_tree_remove_state(s);
 
 	if (pfsync_delete_state_ptr != NULL)
@@ -1676,7 +1676,7 @@ pf_change_state(struct pf_state *s, u_int flags)
 	STATE_DEC_COUNTERS(s);
 
 	s->timeout = PFTM_UNLINKED;
-	*/
+	
 	PF_HASHROW_UNLOCK(ih);
 
 	pf_detach_state(s);
