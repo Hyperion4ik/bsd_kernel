@@ -556,7 +556,7 @@ struct {								\
 
 
 /* SKYNICK XXX */
-#define	LIST_СHANGE(elm, field) do {					\
+#define	LIST_CHANGE(elm, field) do {					\
 	QMD_SAVELINK(oldnext, (elm)->field.le_next);			\
 	QMD_SAVELINK(oldprev, (elm)->field.le_prev);			\
 	QMD_LIST_CHECK_NEXT(elm, field);				\
