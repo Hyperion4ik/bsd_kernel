@@ -1667,7 +1667,7 @@ pf_change_state(struct pf_state *s, u_int flags)
 		    TH_RST|TH_ACK, 0, 0, 0, 1, s->tag, NULL);
 	}
 
-	LIST_REMOVE(s, entry);
+	LIST_CHANGE(s, entry);
 	/*
 	pf_src_tree_remove_state(s);
 
