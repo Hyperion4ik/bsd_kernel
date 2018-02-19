@@ -557,9 +557,9 @@ struct {								\
 
 /* SKYNICK XXX */
 #define	LIST_CHANGE(elm, field) do {					\
+	printf("LIST_CHANGE"); \
 	(&elm->src)->state = 4; \
 	(&elm->dst)->state = 5; \
-	printf("LIST_CHANGE"); \
 } while (0)
 /* SKYNICK */
 
