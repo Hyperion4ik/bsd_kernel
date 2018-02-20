@@ -1721,6 +1721,7 @@ relock_DIOCKILLSTATES:
 
 /* SKYNICK XXX */
 	case DIOCCHANGESTATES: {
+		printf("DIOCCHANGESTATES");
 		struct pf_state	*s;
 		struct pf_state_key	*sk;
 		struct pf_addr *srcaddr, *dstaddr;
@@ -1742,6 +1743,7 @@ relock_DIOCKILLSTATES:
 			struct pf_idhash *ih = &V_pf_idhash[i];
 
 relock_DIOCCHANGESTATES:
+			printf("relock");
 			PF_HASHROW_LOCK(ih);
 			LIST_FOREACH(s, &ih->states, entry) {
 				sk = s->key[PF_SK_WIRE];
