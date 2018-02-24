@@ -1746,6 +1746,24 @@ relock_DIOCCHANGESTATES:
 			printf("relock\n");
 			PF_HASHROW_LOCK(ih);
 			LIST_FOREACH(s, &ih->states, entry) {
+				sk = s->key[PF_SK_WIRE];
+				if (s->direction == PF_OUT) {
+					srcaddr = &sk->addr[1];
+					dstaddr = &sk->addr[0];
+					srcport = sk->port[1];
+					dstport = sk->port[0];
+				} else {
+					srcaddr = &sk->addr[0];
+					dstaddr = &sk->addr[1];
+					srcport = sk->port[0];
+					dstport = sk->port[1];
+				}
+
+				pf_change_state(s, PF_ENTER_LOCKED);
+				changed++;
+				goto relock_DIOCCHANGESTATES;
+			
+			}
 			PF_HASHROW_UNLOCK(ih);
 		}
 		
