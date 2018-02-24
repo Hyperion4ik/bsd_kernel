@@ -1747,7 +1747,6 @@ relock_DIOCCHANGESTATES:
 			PF_HASHROW_LOCK(ih);
 			LIST_FOREACH(s, &ih->states, entry) {
 			PF_HASHROW_UNLOCK(ih);
-			printf("state: %d\n", ih);
 		}
 		
 		psk->psk_changed = changed;
