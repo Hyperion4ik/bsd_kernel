@@ -1759,10 +1759,36 @@ relock_DIOCCHANGESTATES:
 					dstport = sk->port[1];
 				}
 
-				pf_change_state(s, PF_ENTER_LOCKED);
-				changed++;
-				goto relock_DIOCCHANGESTATES;
-			
+				if ((!psk->psk_af || sk->af == psk->psk_af)
+				    && (!psk->psk_proto || psk->psk_proto ==
+				    sk->proto) &&
+				    PF_MATCHA(psk->psk_src.neg,
+				    &psk->psk_src.addr.v.a.addr,
+				    &psk->psk_src.addr.v.a.mask,
+				    srcaddr, sk->af) &&
+				    PF_MATCHA(psk->psk_dst.neg,
+				    &psk->psk_dst.addr.v.a.addr,
+				    &psk->psk_dst.addr.v.a.mask,
+				    dstaddr, sk->af) &&
+				    (psk->psk_src.port_op == 0 ||
+				    pf_match_port(psk->psk_src.port_op,
+				    psk->psk_src.port[0], psk->psk_src.port[1],
+				    srcport)) &&
+				    (psk->psk_dst.port_op == 0 ||
+				    pf_match_port(psk->psk_dst.port_op,
+				    psk->psk_dst.port[0], psk->psk_dst.port[1],
+				    dstport)) &&
+				    (!psk->psk_label[0] ||
+				    (s->rule.ptr->label[0] &&
+				    !strcmp(psk->psk_label,
+				    s->rule.ptr->label))) &&
+				    (!psk->psk_ifname[0] ||
+				    !strcmp(psk->psk_ifname,
+				    s->kif->pfik_name))) {
+					pf_change_state(s, PF_ENTER_LOCKED);
+					changed++;
+					goto relock_DIOCCHANGESTATES;
+				}
 			}
 			PF_HASHROW_UNLOCK(ih);
 		}
